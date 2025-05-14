@@ -26,7 +26,16 @@ public class FileController : ControllerBase
         }
 
         var fileText = await _fileProcessingService.ExtractTextFromFileAsync(matchRequest.FilePath);
-        var score = _similarityService.CalculateJaccardSimilarity(fileText, matchRequest.TemplateText);
+
+        double score;
+        if (matchRequest.UseAI)
+        {
+            score = await _similarityService.CalculateSemanticSimilarityAsync(fileText, matchRequest.TemplateText);
+        }
+        else
+        {
+            score = _similarityService.CalculateJaccardSimilarity(fileText, matchRequest.TemplateText); // Ensure this matches the method name
+        }
 
         return Ok(new { matchScore = score });
     }
@@ -34,6 +43,7 @@ public class FileController : ControllerBase
 
 public class MatchRequest
 {
-    public string FilePath { get; set; }
-    public string TemplateText { get; set; }
+    public string FilePath { get; set; } = string.Empty; // Default value
+    public string TemplateText { get; set; } = string.Empty; // Default value
+    public bool UseAI { get; set; } = false; // Optional property
 }

@@ -48,4 +48,21 @@ public class SimilarityService
         // Placeholder similarity calculation:
         return text1 == text2 ? 1.0 : 0.5;
     }
+
+        /// <summary>
+    /// Calculates the Jaccard similarity between two texts.
+    /// </summary>
+    /// <param name="text1">The first text.</param>
+    /// <param name="text2">The second text.</param>
+    /// <returns>A similarity score between 0.0 and 1.0.</returns>
+    public double CalculateJaccardSimilarity(string text1, string text2)
+    {
+        var set1 = text1.Split(' ').ToHashSet();
+        var set2 = text2.Split(' ').ToHashSet();
+
+        var intersectionSize = set1.Intersect(set2).Count();
+        var unionSize = set1.Union(set2).Count();
+
+        return (double)intersectionSize / unionSize;
+    }
 }
