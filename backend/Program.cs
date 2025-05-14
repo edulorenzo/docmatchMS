@@ -11,7 +11,12 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Add custom services
-builder.Services.AddSingleton<SimilarityService>();
+var azureEndpoint = builder.Configuration["AzureCognitiveServices:Endpoint"]
+    ?? throw new ArgumentNullException("AzureCognitiveServices:Endpoint", "Azure Cognitive Services Endpoint is not configured.");
+var azureApiKey = builder.Configuration["AzureCognitiveServices:ApiKey"]
+    ?? throw new ArgumentNullException("AzureCognitiveServices:ApiKey", "Azure Cognitive Services API Key is not configured.");
+
+builder.Services.AddSingleton(new SimilarityService(azureEndpoint, azureApiKey));
 builder.Services.AddScoped<FileProcessingService>();
 
 var app = builder.Build();
